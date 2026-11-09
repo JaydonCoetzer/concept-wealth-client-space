@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design system | Concept Wealth</title>
+<link rel="stylesheet" href="css/trustfile.css">
+<style>
+  .bb-wrap{max-width:1040px;margin:0 auto;padding:36px 24px 64px;}
+  .bb-band{background:linear-gradient(120deg,var(--navy),var(--sanlam));color:#fff;border-radius:18px;padding:30px 32px;margin-bottom:26px;}
+  .sw-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .sw{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card);}
+  .sw-chip{height:76px;}
+  .sw-meta{padding:10px 12px;}
+  .sw-name{font-size:13px;font-weight:700;color:var(--ink);}
+  .sw-hex{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.02em;}
+  .sw-use{font-size:11.5px;color:var(--faint);margin-top:3px;}
+  .type-row{display:flex;align-items:baseline;gap:16px;border-bottom:1px solid var(--line-2);padding:12px 0;}
+  .type-row span.lab{width:110px;font-size:12px;color:var(--muted);flex-shrink:0;}
+  @media(max-width:760px){.sw-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<div class="bb-wrap">
+
+  <div class="bb-band">
+    <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.75;margin-bottom:8px;">Design system</div>
+    <div style="font-size:30px;font-weight:700;letter-spacing:-.01em;">Concept Wealth, in the family colours</div>
+    <div style="font-size:15px;opacity:.85;margin-top:8px;max-width:60ch;">Drawn from <b>Glacier by Sanlam</b> (navy, steel-blue) and <b>Sanlam BlueStar</b> (Sanlam blue, charcoal). One typeface, Roboto, is shared by both.</div>
+  </div>
+
+  <!-- Sources -->
+  <div class="tf-grid-2" style="margin-bottom:28px;">
+    <div class="tf-card"><p class="tf-card-title">Source · Glacier by Sanlam</p>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <div style="flex:1;height:46px;border-radius:8px;background:#172b4d;"></div>
+        <div style="flex:1;height:46px;border-radius:8px;background:#2b436b;"></div>
+        <div style="flex:1;height:46px;border-radius:8px;background:#4f6d9f;"></div>
+      </div>
+      <p style="font-size:13.5px;color:var(--ink-2);margin:0;">Deep navy, premium and calm. Roboto. White space, thin card borders.</p>
+    </div>
+    <div class="tf-card"><p class="tf-card-title">Source · Concept Wealth / Sanlam BlueStar</p>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <div style="flex:1;height:46px;border-radius:8px;background:#333e48;"></div>
+        <div style="flex:1;height:46px;border-radius:8px;background:#003380;"></div>
+        <div style="flex:1;height:46px;border-radius:8px;background:#0076ce;"></div>
+      </div>
+      <p style="font-size:13.5px;color:var(--ink-2);margin:0;">Charcoal base with the signature Sanlam blue. Roboto. The hexagon "concept" mark.</p>
+    </div>
+  </div>
+
+  <!-- Core palette -->
+  <h2 class="tf-h2" style="font-size:20px;margin-bottom:14px;">Brand blues</h2>
+  <div class="sw-grid" style="margin-bottom:26px;">
+    <div class="sw"><div class="sw-chip" style="background:#172b4d"></div><div class="sw-meta"><div class="sw-name">Navy</div><div class="sw-hex">#172B4D</div><div class="sw-use">Headers, dark buttons, sidebar</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#2b436b"></div><div class="sw-meta"><div class="sw-name">Navy 2</div><div class="sw-hex">#2B436B</div><div class="sw-use">Gradients, hover depth</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#0076ce"></div><div class="sw-meta"><div class="sw-name">Sanlam blue</div><div class="sw-hex">#0076CE</div><div class="sw-use">Links, accents, active, rings</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#0052b4"></div><div class="sw-meta"><div class="sw-name">Sanlam deep</div><div class="sw-hex">#0052B4</div><div class="sw-use">Button hover, gradient mid</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#003380"></div><div class="sw-meta"><div class="sw-name">Sanlam navy</div><div class="sw-hex">#003380</div><div class="sw-use">Deepest gradient stop</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#4f6d9f"></div><div class="sw-meta"><div class="sw-name">Steel</div><div class="sw-hex">#4F6D9F</div><div class="sw-use">Secondary panels, tracks</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#333e48"></div><div class="sw-meta"><div class="sw-name">Charcoal</div><div class="sw-hex">#333E48</div><div class="sw-use">TrustFile dark option</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:linear-gradient(120deg,#172b4d,#0076ce)"></div><div class="sw-meta"><div class="sw-name">Brand gradient</div><div class="sw-hex">Navy → Sanlam</div><div class="sw-use">Hero bands, feature tiles</div></div></div>
+  </div>
+
+  <h2 class="tf-h2" style="font-size:20px;margin-bottom:14px;">Neutrals &amp; status</h2>
+  <div class="sw-grid" style="margin-bottom:30px;">
+    <div class="sw"><div class="sw-chip" style="background:#1b2735"></div><div class="sw-meta"><div class="sw-name">Ink</div><div class="sw-hex">#1B2735</div><div class="sw-use">Primary text</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#46505c"></div><div class="sw-meta"><div class="sw-name">Body</div><div class="sw-hex">#46505C</div><div class="sw-use">Body copy</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#8a929c"></div><div class="sw-meta"><div class="sw-name">Muted</div><div class="sw-hex">#8A929C</div><div class="sw-use">Captions, labels</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#f4f7fb;border-bottom:1px solid var(--line)"></div><div class="sw-meta"><div class="sw-name">Paper</div><div class="sw-hex">#F4F7FB</div><div class="sw-use">Page background</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#2e7d52"></div><div class="sw-meta"><div class="sw-name">Green</div><div class="sw-hex">#2E7D52</div><div class="sw-use">Positive, done</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#b4791f"></div><div class="sw-meta"><div class="sw-name">Amber</div><div class="sw-hex">#B4791F</div><div class="sw-use">Gaps, warnings</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#c0453f"></div><div class="sw-meta"><div class="sw-name">Red</div><div class="sw-hex">#C0453F</div><div class="sw-use">Costs, negative</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#e1e7ef"></div><div class="sw-meta"><div class="sw-name">Line</div><div class="sw-hex">#E1E7EF</div><div class="sw-use">Hairline borders</div></div></div>
+  </div>
+
+  <!-- Typography -->
+  <h2 class="tf-h2" style="font-size:20px;margin-bottom:6px;">Typeface · Roboto</h2>
+  <p class="tf-lead" style="font-size:14px;margin-bottom:12px;">Shared by Glacier and Sanlam. Weights 300 / 400 / 500 / 700 / 900.</p>
+  <div class="tf-card" style="margin-bottom:28px;">
+    <div class="type-row"><span class="lab">Display 700</span><span style="font-size:36px;font-weight:700;color:var(--ink);letter-spacing:-.02em;">Plan today for a brighter tomorrow</span></div>
+    <div class="type-row"><span class="lab">Heading 700</span><span style="font-size:24px;font-weight:700;color:var(--ink);">Your estate, simply explained</span></div>
+    <div class="type-row"><span class="lab">Subhead 500</span><span style="font-size:18px;font-weight:500;color:var(--ink);">What you hold, and how it has grown</span></div>
+    <div class="type-row"><span class="lab">Body 400</span><span style="font-size:15px;color:var(--ink-2);">We put your whole financial picture, and your family's readiness, in one place.</span></div>
+    <div class="type-row"><span class="lab">Caption 500</span><span style="font-size:12px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);">Concept Wealth Woodhill · SARS 2026/27</span></div>
+  </div>
+
+  <!-- Components -->
+  <h2 class="tf-h2" style="font-size:20px;margin-bottom:14px;">Components</h2>
+  <div class="tf-grid-2">
+    <div class="tf-card">
+      <p class="tf-card-title">Buttons &amp; tags</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+        <button class="tf-btn tf-btn-primary tf-btn-sm">Primary (navy)</button>
+        <button class="tf-btn tf-btn-ghost tf-btn-sm">Secondary</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <span class="tf-tag tf-tag-teal">Sanlam blue</span>
+        <span class="tf-tag tf-tag-green">Done</span>
+        <span class="tf-tag tf-tag-amber">3 gaps</span>
+        <span class="tf-tag tf-tag-red">Shortfall</span>
+      </div>
+    </div>
+    <div class="tf-card">
+      <p class="tf-card-title">Readiness</p>
+      <div style="display:flex;align-items:center;gap:18px;">
+        <div class="ring" style="--val:71;--size:92px"><div class="ring-inner"><div class="ring-pct" style="font-size:20px">71%</div></div></div>
+        <div style="flex:1;">
+          <div class="meter"><div class="meter-head"><span class="meter-name">My money</span><span class="meter-val">79%</span></div><div class="meter-bar"><div class="meter-fill money" style="width:79%"></div></div></div>
+          <div class="meter"><div class="meter-head"><span class="meter-name">My family file</span><span class="meter-val">62%</span></div><div class="meter-bar"><div class="meter-fill file" style="width:62%"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

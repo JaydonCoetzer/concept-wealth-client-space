@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estate Cost Calculator | Concept Wealth Woodhill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script>
+<style>
+  /* page-specific only */
+  .ec-results{position:sticky;top:86px;}
+  @media(max-width:820px){.ec-results{position:static;}}
+  .ec-total-card{background:var(--teal-deep);border:none;color:#fff;}
+  .ec-total-card .tf-stat-label{color:rgba(255,255,255,.7);}
+  .ec-total-card .tf-stat-value{color:#fff;}
+  .ec-total-card .tf-stat-sub{color:rgba(255,255,255,.75);}
+  .ec-cta{display:flex;flex-direction:column;gap:10px;}
+  details.ec-assume{border-top:1px solid var(--line);margin-top:4px;padding-top:12px;}
+  details.ec-assume summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--muted);list-style:none;}
+  details.ec-assume summary::-webkit-details-marker{display:none;}
+  details.ec-assume summary::after{content:' ▾';color:var(--faint);}
+  details.ec-assume[open] summary::after{content:' ▴';}
+</style>
+</head>
+<body>
+
+<!-- ── Top bar ─────────────────────────────────────────── -->
+<div class="tf-topbar">
+  <div class="tf-brand">
+    <div class="tf-logo">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/><path d="M9 12l2 2 4-4"/></svg>
+    </div>
+    <div>
+      <div class="tf-brand-name">Concept Wealth</div>
+      <div class="tf-brand-sub">Woodhill BlueStar</div>
+    </div>
+  </div>
+  <nav class="tf-nav">
+    <a href="family_file.html">Family File</a>
+    <a href="calculators.html">Calculators</a>
+    <a href="estate_cost_calculator.html" style="color:var(--teal)">Estate costs</a>
+  </nav>
+  <div class="tf-topbar-actions">
+    <a href="index.html" class="tf-btn tf-btn-ghost tf-btn-sm">← All tools</a>
+  </div>
+</div>
+
+<div class="tf-wrap">
+
+  <!-- ── Page head ─────────────────────────────────────── -->
+  <div style="margin-bottom:24px;">
+    <span class="tf-eyebrow">Estate planning</span>
+    <h1 class="tf-h1">What will your estate cost?</h1>
+    <p class="tf-lead">See the estate duty, fees, taxes and the cash your family will need, before it is needed. An estimate in plain numbers, not advice.</p>
+  </div>
+
+  <div class="tf-grid-2">
+
+    <!-- ── Inputs ──────────────────────────────────────── -->
+    <div class="tf-card tf-card-pad-lg">
+      <p class="tf-group-label">Your estate</p>
+
+      <div class="tf-field">
+        <label class="tf-label" for="property">Property</label>
+        <div class="tf-pfx"><span>R</span><input class="tf-input" id="property" inputmode="decimal" value="3 500 000"></div>
+      </div>
+      <div class="tf-grid-fields">
+        <div class="tf-field">
+          <label class="tf-label" for="investments">Investments</label>
+          <div class="tf-pfx"><span>R</span><input class="tf-input" id="investments" inputmode="decimal" value="2 000 000"></div>
+        </div>
+        <div class="tf-field">
+          <label class="tf-label" for="cash">Cash &amp; bank</label>
+          <div class="tf-pfx"><span>R</span><input class="tf-input" id="cash" inputmode="decimal" value="600 000"></div>
+        </div>
+      </div>
+      <div class="tf-grid-fields">
+        <div class="tf-field">
+          <label class="tf-label" for="other">Other assets</label>
+          <div class="tf-pfx"><span>R</span><input class="tf-input" id="other" inputmode="decimal" value="400 000"></div>
+          <div class="tf-hint">Vehicles, business interests, personal effects.</div>
+        </div>
+        <div class="tf-field">
+          <label class="tf-label" for="retireToEstate">Retirement to estate</label>
+          <div class="tf-pfx"><span>R</span><input class="tf-input" id="retireToEstate" inputmode="decimal" value="0"></div>
+          <div class="tf-hint">Leave 0 if beneficiaries are nominated: those benefits fall outside the estate.</div>
+        </div>
+      </div>
+
+      <hr class="tf-divider">
+      <p class="tf-group-label">Deductions &amp; details</p>
+
+      <div class="tf-grid-fields">
+        <div class="tf-field">
+          <label class="tf-label" for="liabilities">Liabilities / debts</label>
+          <div class="tf-pfx"><span>R</span><input class="tf-input" id="liabilities" inputmode="decimal" value="500 000"></div>
+        </div>
+        <div class="tf-field">
+          <label class="tf-label" for="funeral">Funeral &amp; deathbed</label>
+          <div class="tf-pfx"><span>R</span><input class="tf-input" id="funeral" inputmode="decimal" value="50 000"></div>
+        </div>
+      </div>
+
+      <div class="tf-field">
+        <label class="tf-label" for="regime">Marital regime</label>
+        <select class="tf-select" id="regime">
+          <option value="single">Single / unmarried</option>
+          <option value="out">Married — out of community of property</option>
+          <option value="in">Married — in community of property</option>
+        </select>
+        <div class="tf-hint" id="regimeHint">In community: the executor fee is on the whole joint estate; duty is on the deceased's half.</div>
+      </div>
+
+      <div class="tf-field">
+        <label class="tf-label" for="spouseBequest">Bequest to spouse</label>
+        <div class="tf-pfx"><span>R</span><input class="tf-input" id="spouseBequest" inputmode="decimal" value="0"></div>
+        <div class="tf-hint">Amounts left to a spouse are deductible for estate duty (section 4(q)).</div>
+      </div>
+
+      <div class="tf-grid-fields">
+        <div class="tf-field">
+          <label class="tf-label" for="gains">Capital gains (not to spouse)</label>
+          <div class="tf-pfx"><span>R</span><input class="tf-input" id="gains" inputmode="decimal" value="0"></div>
+          <div class="tf-hint">Estimated unrealised gains for CGT on death. Assets left to a spouse roll over.</div>
+        </div>
+        <div class="tf-field">
+          <label class="tf-label" for="conveyancing">Conveyancing (estimate)</label>
+          <div class="tf-pfx"><span>R</span><input class="tf-input" id="conveyancing" inputmode="decimal" value="0"></div>
+          <div class="tf-hint">Transfer of fixed property. Rough estimate, editable.</div>
+        </div>
+      </div>
+
+      <div class="tf-field">
+        <label class="tf-label" for="will">Is there a signed will?</label>
+        <select class="tf-select" id="will">
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer;margin-top:4px;">
+        <input type="checkbox" id="portable" style="width:17px;height:17px;margin-top:2px;flex-shrink:0;accent-color:var(--teal);">
+        <span style="font-size:13.5px;color:var(--ink-2);">Second-dying spouse — use the first spouse's unused R3.5m abatement (up to R7m total)</span>
+      </label>
+    </div>
+
+    <!-- ── Results ─────────────────────────────────────── -->
+    <div class="ec-results tf-stack">
+
+      <div class="tf-card tf-card-pad-lg ec-total-card">
+        <div class="tf-stat-label">Total estate costs</div>
+        <div class="tf-stat-value" id="rTotal">R 0</div>
+        <div class="tf-stat-sub" id="rTotalSub">—</div>
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,.15);margin:16px 0;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;">
+          <span style="font-size:13px;color:rgba(255,255,255,.7);font-weight:600;">Net to heirs</span>
+          <span style="font-size:20px;font-weight:800;" id="rNet">R 0</span>
+        </div>
+      </div>
+
+      <div class="tf-card">
+        <p class="tf-card-title">Cost breakdown</p>
+        <div class="tf-row"><span class="tf-row-k">Estate duty<small id="rDutyNote">—</small></span><span class="tf-row-v red" id="rDuty">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Executor fee<small>3.5% of assets + 15% VAT</small></span><span class="tf-row-v" id="rExec">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Master's fee<small>Sliding scale, max R7 000</small></span><span class="tf-row-v" id="rMaster">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Conveyancing<small>Property transfer estimate</small></span><span class="tf-row-v" id="rConvey">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">CGT on death<small>Deemed disposal</small></span><span class="tf-row-v" id="rCGT">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Funeral &amp; deathbed</span><span class="tf-row-v" id="rFuneral">R 0</span></div>
+        <div class="tf-row total"><span class="tf-row-k">Total estate costs</span><span class="tf-row-v red" id="rTotal2">R 0</span></div>
+      </div>
+
+      <div class="tf-card">
+        <p class="tf-card-title">Liquidity — cash on the day</p>
+        <div class="tf-row"><span class="tf-row-k">Cash needed<small>Costs + debts to settle</small></span><span class="tf-row-v" id="rNeeded">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Cash available<small>Bank + retirement to estate</small></span><span class="tf-row-v" id="rAvail">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k" style="font-weight:700;">Liquidity gap</span><span class="tf-row-v" id="rGap">R 0</span></div>
+        <div id="rGapNote" style="margin-top:12px;"></div>
+      </div>
+
+      <div id="rInsights" class="tf-stack" style="gap:10px;"></div>
+
+      <div class="tf-card">
+        <div class="ec-cta">
+          <a class="tf-btn tf-btn-primary tf-btn-block" id="bookBtn" href="#">Book a 20-minute review</a>
+          <button class="tf-btn tf-btn-ghost tf-btn-block" id="saveBtn" type="button">Save to my profile</button>
+        </div>
+        <details class="ec-assume" style="margin-top:16px;">
+          <summary>Assumptions &amp; sources</summary>
+          <div class="tf-assume" style="margin-top:10px;">
+            <b>SARS / Master's figures used (2026, confirm annually):</b><br>
+            Estate duty: 20% on the dutiable estate up to R30m, 25% above. Section 4A abatement R3.5m
+            (portable between spouses, up to R7m). Section 4(q) spousal bequests deductible.<br>
+            Executor fee: 3.5% of the gross value of estate assets, plus 15% VAT.<br>
+            Master's fee: sliding scale, nil under R250 000, R600 to R400 000, then R200 per R100 000, capped at R7 000.<br>
+            CGT on death: deemed disposal, R300 000 annual exclusion in the year of death, 40% inclusion,
+            assumed 45% marginal rate (18% effective). Assets to a spouse roll over.<br>
+            Conveyancing is a rough transfer estimate you can edit, confirm against the Law Society guideline.<br><br>
+            This is an illustration, not financial, tax or legal advice. Figures are estimates;
+            a formal estate plan should be prepared with your adviser.
+          </div>
+        </details>
+      </div>
+
+    </div><!-- /results -->
+  </div><!-- /grid -->
+</div><!-- /wrap -->
+
+<footer class="tf-footer">
+  <p>For illustrative and educational purposes only. Not financial, tax or legal advice.</p>
+  <p class="tf-foot-brand">Concept Wealth Woodhill · SARS 2026/27 · Concept Wealth Holdings FSP No. 2759</p>
+  <p style="font-size:11px;color:var(--faint);margin-top:4px;">Advice offered through Glacier Financial Solutions (Pty) Ltd, an authorised financial services provider.</p>
+</footer>
+
+<script>
+// ============================================================
+//  ESTATE COST CALCULATOR  ·  Concept Wealth Woodhill
+//  Illustration only. Verify every constant annually.
+// ============================================================
+
+// ── CONSTANTS (SARS / Master's — 2026; VERIFY against official
+//    sources: Estate Duty Act 45/1955, SARS, Administration of
+//    Estates Act. Confirmed via secondary sources Nov 2026.) ──
+const ESTATE_DUTY_ABATEMENT = 3500000;   // s4A primary abatement
+const ESTATE_DUTY_THRESHOLD = 30000000;  // 20% up to here
+const ESTATE_DUTY_RATE_1     = 0.20;     // on dutiable <= 30m
+const ESTATE_DUTY_RATE_2     = 0.25;     // on portion > 30m
+const EXECUTOR_RATE          = 0.035;    // 3.5% of gross assets
+const VAT                    = 0.15;     // VAT on executor fee
+const MASTERS_CAP            = 7000;
+const CGT_DEATH_EXCL         = 300000;   // year-of-death exclusion
+const CGT_INCLUSION          = 0.40;
+const CGT_MARGINAL           = 0.45;     // assumed top marginal (18% effective)
+const CONVEY_EST_RATE        = 0.012;    // ~1.2% of property — ESTIMATE only
+
+// Single place for the "book a review" target (OPEN DECISION — confirm with owner)
+const ADVISOR_CONTACT = 'mailto:mcoetzer@sanlam4u.co.za?subject=Estate%20review%20request';
+
+// ── Helpers ──────────────────────────────────────────────
+function pAmt(s){ if(typeof s!=='string') return +s||0; const n=parseFloat(s.replace(/[^\d.-]/g,'')); return isNaN(n)?0:n; }
+function fmtR(v){ if(v==null||isNaN(v)||!isFinite(v)) return 'R 0'; const n=Math.round(Math.abs(v)); const s=n.toLocaleString('en-ZA').replace(/,/g,' '); return (v<0?'-R ':'R ')+s; }
+function fmtPct(v){ return (v||0).toFixed(1).replace('.',',')+'%'; }
+function gA(id){ return pAmt(document.getElementById(id).value); }
+function gV(id){ return document.getElementById(id).value; }
+
+function mastersFeeScale(net){
+  if(net < 250000) return 0;
+  if(net <= 400000) return 600;
+  const steps = Math.ceil((net - 400000) / 100000); // per R100k or part
+  return Math.min(MASTERS_CAP, 600 + steps * 200);
+}
+
+// ── Core computation (pure; mirrored in the node test) ───
+function computeEstate(i){
+  const grossAssets = i.property + i.investments + i.retireToEstate + i.cash + i.other;
+  const inCommunity = i.regime === 'in';
+  const deceasedEstate = inCommunity ? grossAssets / 2 : grossAssets;
+  const deceasedLiab   = inCommunity ? i.liabilities / 2 : i.liabilities;
+
+  // Executor fee on the gross value of assets administered
+  // (the whole joint estate in community of property).
+  const executorBase = grossAssets;
+  const executorFee  = executorBase * EXECUTOR_RATE * (1 + VAT);
+
+  // Master's fee on the net estate (deceased share less debts).
+  const netForMaster = Math.max(0, deceasedEstate - deceasedLiab);
+  const mastersFee   = mastersFeeScale(netForMaster);
+
+  const conveyancing = i.conveyancing;
+
+  // CGT on death — deemed disposal of gains not rolling to a spouse.
+  const cgt = Math.max(0, i.gains - CGT_DEATH_EXCL) * CGT_INCLUSION * CGT_MARGINAL;
+
+  // Estate duty — dutiable estate after deductions and abatement(s).
+  const abatement = ESTATE_DUTY_ABATEMENT + (i.portable ? ESTATE_DUTY_ABATEMENT : 0);
+  const dutiable = Math.max(0,
+    deceasedEstate - deceasedLiab - i.funeral - executorFee - mastersFee
+    - conveyancing - i.spouseBequest - abatement);
+  let estateDuty;
+  if(dutiable <= ESTATE_DUTY_THRESHOLD) estateDuty = dutiable * ESTATE_DUTY_RATE_1;
+  else estateDuty = ESTATE_DUTY_THRESHOLD * ESTATE_DUTY_RATE_1
+                  + (dutiable - ESTATE_DUTY_THRESHOLD) * ESTATE_DUTY_RATE_2;
+
+  const totalCosts = estateDuty + executorFee + mastersFee + conveyancing + cgt + i.funeral;
+  const netToHeirs = Math.max(0, deceasedEstate - deceasedLiab - totalCosts);
+
+  const cashNeeded    = totalCosts + deceasedLiab;
+  const cashAvailable = i.cash + i.retireToEstate;
+  const liquidityGap  = cashNeeded - cashAvailable;
+
+  const costPct = deceasedEstate > 0 ? totalCosts / deceasedEstate * 100 : 0;
+
+  return { grossAssets, deceasedEstate, executorFee, mastersFee, conveyancing, cgt,
+           dutiable, estateDuty, funeral:i.funeral, totalCosts, netToHeirs,
+           cashNeeded, cashAvailable, liquidityGap, costPct };
+}
+
+function readInputs(){
+  return {
+    property:      gA('property'),
+    investments:   gA('investments'),
+    cash:          gA('cash'),
+    other:         gA('other'),
+    retireToEstate:gA('retireToEstate'),
+    liabilities:   gA('liabilities'),
+    funeral:       gA('funeral'),
+    regime:        gV('regime'),
+    spouseBequest: gA('spouseBequest'),
+    gains:         gA('gains'),
+    conveyancing:  gA('conveyancing'),
+    will:          gV('will'),
+    portable:      document.getElementById('portable').checked,
+  };
+}
+
+// ── Render ───────────────────────────────────────────────
+let LAST = null;
+function calc(){
+  const i = readInputs();
+  const r = computeEstate(i);
+  LAST = { inputs:i, results:r };
+
+  document.getElementById('rTotal').textContent   = fmtR(r.totalCosts);
+  document.getElementById('rTotal2').textContent  = fmtR(r.totalCosts);
+  document.getElementById('rTotalSub').textContent= fmtPct(r.costPct) + ' of the estate · net ' + fmtR(r.netToHeirs);
+  document.getElementById('rNet').textContent     = fmtR(r.netToHeirs);
+  document.getElementById('rDuty').textContent    = fmtR(r.estateDuty);
+  document.getElementById('rDutyNote').textContent= r.estateDuty > 0 ? 'Dutiable: ' + fmtR(r.dutiable) : 'Below abatement — no duty';
+  document.getElementById('rExec').textContent    = fmtR(r.executorFee);
+  document.getElementById('rMaster').textContent  = fmtR(r.mastersFee);
+  document.getElementById('rConvey').textContent  = fmtR(r.conveyancing);
+  document.getElementById('rCGT').textContent     = fmtR(r.cgt);
+  document.getElementById('rFuneral').textContent = fmtR(r.funeral);
+
+  document.getElementById('rNeeded').textContent  = fmtR(r.cashNeeded);
+  document.getElementById('rAvail').textContent   = fmtR(r.cashAvailable);
+  const gapEl = document.getElementById('rGap');
+  gapEl.textContent = (r.liquidityGap > 0 ? fmtR(r.liquidityGap) + ' short' : fmtR(-r.liquidityGap) + ' spare');
+  gapEl.className = 'tf-row-v ' + (r.liquidityGap > 0 ? 'red' : 'green');
+
+  const gapNote = document.getElementById('rGapNote');
+  if(r.liquidityGap > 0){
+    gapNote.innerHTML = '<div class="tf-callout tf-callout-amber">There is a cash shortfall of <b>' + fmtR(r.liquidityGap) +
+      '</b>. Assets may have to be sold, sometimes in a hurry, to settle costs and debts. Life cover or a liquidity plan can close this.</div>';
+  } else {
+    gapNote.innerHTML = '<div class="tf-callout tf-callout-teal">Cash on hand covers the estate costs and debts, with <b>' + fmtR(-r.liquidityGap) + '</b> to spare.</div>';
+  }
+
+  // Insights
+  const ins = [];
+  if(i.will === 'no'){
+    ins.push('<div class="tf-callout tf-callout-amber"><b>No will.</b> Without a signed will the estate is wound up under intestate succession, the Master appoints the executor, and it usually takes longer. A will is the single biggest fix here.</div>');
+  }
+  if(r.estateDuty > 0 && i.spouseBequest === 0 && (i.regime === 'in' || i.regime === 'out')){
+    ins.push('<div class="tf-callout tf-callout-teal">A bequest to your spouse is deductible for estate duty. Leaving more to a spouse can reduce or remove the <b>' + fmtR(r.estateDuty) + '</b> duty, which then falls due in the second estate instead.</div>');
+  }
+  document.getElementById('rInsights').innerHTML = ins.join('');
+
+  // Regime hint
+  const rh = document.getElementById('regimeHint');
+  rh.textContent = i.regime === 'in'
+    ? 'In community: executor fee is on the whole joint estate; duty and Master’s fee on the deceased’s half.'
+    : (i.regime === 'out' ? 'Out of community: the estate is the deceased’s own assets.' : 'Single: the estate is your own assets.');
+}
+
+// Prefill conveyancing estimate from property (editable)
+function suggestConvey(){
+  const el = document.getElementById('conveyancing');
+  if(!el.dataset.touched){
+    const est = Math.round(gA('property') * CONVEY_EST_RATE);
+    el.value = est ? est.toLocaleString('en-ZA').replace(/,/g,' ') : '0';
+  }
+}
+
+// ── Wiring ───────────────────────────────────────────────
+['property','investments','cash','other','retireToEstate','liabilities','funeral',
+ 'spouseBequest','gains','conveyancing'].forEach(function(id){
+  const el = document.getElementById(id);
+  el.addEventListener('input', function(){ if(id==='conveyancing') el.dataset.touched='1'; if(id==='property') suggestConvey(); calc(); });
+  el.addEventListener('blur', function(){ const v = pAmt(el.value); el.value = v ? v.toLocaleString('en-ZA').replace(/,/g,' ') : '0'; });
+});
+['regime','will'].forEach(function(id){ document.getElementById(id).addEventListener('change', calc); });
+document.getElementById('portable').addEventListener('change', calc);
+
+document.getElementById('bookBtn').setAttribute('href', ADVISOR_CONTACT);
+
+document.getElementById('saveBtn').addEventListener('click', function(){
+  if(!LAST) return;
+  function doSave(){
+    CWProfile.saveResult('estate_cost', {
+      inputs: LAST.inputs,
+      results: LAST.results,
+      summary: 'Estate costs ' + fmtR(LAST.results.totalCosts) + ', net to heirs ' + fmtR(LAST.results.netToHeirs)
+    });
+    if(CWProfile.showToast) CWProfile.showToast('Saved to your profile', 'success');
+  }
+  if(CWProfile.getProfile && CWProfile.getProfile()) doSave();
+  else if(CWProfile.showSavePrompt) CWProfile.showSavePrompt(doSave);
+  else doSave();
+});
+
+// Init
+suggestConvey();
+calc();
+</script>
+</body>
+</html>

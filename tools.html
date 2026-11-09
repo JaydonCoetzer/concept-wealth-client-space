@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculators | Concept Wealth</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script>
+</head>
+<body>
+<div class="tf-wrap">
+  <span class="tf-eyebrow">Calculators</span>
+  <h1 class="tf-h2">Tools for every money decision</h1>
+  <p class="tf-lead" style="margin-bottom:24px;">Your existing calculators, moving into this space one by one. Estate costs is live now.</p>
+  <div id="groups"></div>
+</div>
+<script src="js/topbar.js" data-page="tools"></script>
+<script>
+var GROUPS=[
+  {name:'Plan',    items:[['Retirement','soon'],['Savings goal','soon'],['Net worth','soon'],['Budget','soon']]},
+  {name:'Tax',     items:[['Income tax','soon'],['Investment tax (CGT)','soon'],['RA fee drag','soon']]},
+  {name:'Protect', items:[['Life cover','soon'],['Estate costs','live']]},
+  {name:'Borrow',  items:[['Loan / bond repayment','soon']]}
+];
+document.getElementById('groups').innerHTML=GROUPS.map(function(g){
+  return '<p class="tf-card-title" style="margin:0 0 12px 2px;">'+g.name+'</p><div class="tiles" style="margin-bottom:22px;">'+
+    g.items.map(function(it){ var live=it[1]==='live'; var href=live?'estate_cost_calculator.html':'#';
+      return '<a class="tile" href="'+href+'"'+(live?'':' style="opacity:.6"')+'><div class="tile-name">'+it[0]+'</div>'+
+        '<div class="tile-sub"><span class="tf-tag '+(live?'tf-tag-green':'tf-tag-teal')+'" style="font-size:10.5px;padding:2px 8px;">'+(live?'Live':'Coming soon')+'</span></div></a>';
+    }).join('')+'</div>';
+}).join('');
+</script>
+</body>
+</html>

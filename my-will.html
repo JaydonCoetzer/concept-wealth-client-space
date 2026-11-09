@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrustFile · My Will | Concept Wealth</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script>
+</head>
+<body>
+<div class="app" id="app"><div class="app-main"><div class="app-content">
+  <span class="tf-eyebrow">Your will</span>
+  <h1 class="tf-h2">The basics your family will need</h1>
+  <p class="tf-lead" style="margin-bottom:22px;">Tick what is in place. Your file-ready score updates as you go. No documents are uploaded here yet, just the facts that help your family act.</p>
+  <div class="tf-card">
+    <p class="tf-card-title">Will checklist</p>
+    <div id="checklist" class="tf-stack" style="gap:2px;"></div>
+    <div class="tf-callout tf-callout-teal" style="margin-top:16px;">Next: storing the signed document and naming who may release it, in the secured phase.</div>
+  </div>
+</div></div></div>
+<script src="js/tf-shell.js" data-page="my-will" data-title="My Will"></script>
+<script>
+var ITEMS=[
+  ['A signed will exists','Without one, the law decides who inherits, not you.'],
+  ['The original is findable','Your executor needs the signed original, tell them where it is.'],
+  ['Updated in the last 3 years','Life changes, marriage, children, new assets, should be reflected.'],
+  ['Executor named and told','The person who will wind up your estate knows they were chosen.']
+];
+function render(){
+  var saved={}; try{ var r=CWProfile.getResult&&CWProfile.getResult('family_file'); if(r&&r.inputs&&r.inputs.will) saved=r.inputs.will; }catch(e){}
+  document.getElementById('checklist').innerHTML = ITEMS.map(function(it,idx){
+    var on=!!saved['w'+idx];
+    return '<label class="tf-row" style="cursor:pointer;"><span class="tf-row-k" style="display:flex;align-items:flex-start;gap:11px;">'+
+      '<input type="checkbox" data-i="'+idx+'" '+(on?'checked':'')+' style="width:18px;height:18px;margin-top:1px;accent-color:var(--teal-mid);">'+
+      '<span><b style="color:var(--ink);font-weight:700;">'+it[0]+'</b><small>'+it[1]+'</small></span></span></label>';
+  }).join('');
+}
+function save(){
+  var will={}; var boxes=document.querySelectorAll('#checklist input'); var done=0;
+  boxes.forEach(function(b){ if(b.checked){ will['w'+b.dataset.i]=1; done++; } });
+  var score=Math.round(done/ITEMS.length*100);
+  function write(){ CWProfile.saveResult('family_file',{inputs:{will:will},results:{score:score},summary:'Family file '+score+'% ready'}); }
+  if(CWProfile.getProfile&&CWProfile.getProfile()) write();
+  else if(CWProfile.showSavePrompt) CWProfile.showSavePrompt(write); else write();
+}
+render();
+document.getElementById('checklist').addEventListener('change', save);
+</script>
+</body>
+</html>

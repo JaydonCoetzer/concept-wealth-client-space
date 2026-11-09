@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile | Concept Wealth</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script>
+</head>
+<body>
+<div class="tf-wrap">
+  <span class="tf-eyebrow">Profile</span>
+  <h1 class="tf-h2">Your profile &amp; plan</h1>
+  <div class="tf-card" id="profileCard" style="margin:18px 0;"></div>
+
+  <p class="tf-card-title" style="margin:0 0 12px 2px;">Your plan</p>
+  <div class="tiles" style="grid-template-columns:repeat(3,1fr);">
+    <div class="tf-card"><div class="tf-stat-label">Free</div><div class="tf-stat-value">R0</div><p style="font-size:13px;color:var(--muted);margin:8px 0 0;">Calculators, estate cost tool and a starter file for 2 people.</p></div>
+    <div class="tf-card" style="border-color:var(--teal);"><div class="tf-stat-label" style="color:var(--teal)">Family</div><div class="tf-stat-value">R49<span style="font-size:14px;color:var(--muted)">/mo</span></div><p style="font-size:13px;color:var(--muted);margin:8px 0 0;">Your full TrustFile, unlimited people, executor release and messages.</p></div>
+    <div class="tf-card"><div class="tf-stat-label">Concept Wealth clients</div><div class="tf-stat-value">Reduced</div><p style="font-size:13px;color:var(--muted);margin:8px 0 0;">Everything in Family at a lower rate, with your annual review built in.</p></div>
+  </div>
+  <p class="tf-assume" style="margin-top:10px;">Draft pricing. Billing arrives in a later phase; nothing is charged today.</p>
+</div>
+<script src="js/topbar.js" data-page="profile"></script>
+<script>
+function renderProfile(){
+  var p=null; try{ p=CWProfile.getProfile&&CWProfile.getProfile(); }catch(e){}
+  var el=document.getElementById('profileCard');
+  if(p){
+    el.innerHTML='<p class="tf-card-title">Signed in</p>'+
+      '<div class="tf-row"><span class="tf-row-k">Name</span><span class="tf-row-v">'+(p.firstName||'')+'</span></div>'+
+      '<div class="tf-row"><span class="tf-row-k">Email</span><span class="tf-row-v">'+(p.email||'')+'</span></div>'+
+      '<div style="margin-top:14px;"><button class="tf-btn tf-btn-ghost tf-btn-sm" onclick="CWProfile.clearProfile();location.reload()">Switch client</button></div>';
+  } else {
+    el.innerHTML='<p class="tf-card-title">Start free</p>'+
+      '<p style="font-size:14.5px;color:var(--ink-2);margin:0 0 16px;">Create a profile to save your results and build your family file. Just a name and email, no password yet.</p>'+
+      '<button class="tf-btn tf-btn-primary" onclick="CWProfile.showSavePrompt(function(){location.reload();})">Create my profile</button>';
+  }
+}
+renderProfile();
+</script>
+</body>
+</html>

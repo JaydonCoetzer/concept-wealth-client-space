@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrustFile | Concept Wealth</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script>
+</head>
+<body>
+<div class="app" id="app"><div class="app-main"><div class="app-content" id="sec"></div></div></div>
+<script>
+var SEC={
+  profile:  ['Your profile','The person behind the file','Your name, contacts and household, used across your TrustFile.'],
+  documents:['Documents','Your important papers, one safe place','IDs, policies, title deeds and certificates. Secured storage arrives in a later phase, for now the checklist tracks what exists.'],
+  people:   ['People & Access','Who can see your file, and when','Choose exactly who may view each part, now or only when it is needed. Executor release is set here.'],
+  messages: ['Messages','Words for the people you love','Leave a note for your family to read at the right time. Coming soon.'],
+  security: ['Security & Privacy','Encryption and release rules','How your file is protected and the rules for releasing it. POPIA compliant by design.']
+};
+var s=new URLSearchParams(location.search).get('s')||'documents';
+var d=SEC[s]||SEC.documents;
+document.getElementById('sec').innerHTML =
+  '<span class="tf-eyebrow">TrustFile</span><h1 class="tf-h2">'+d[1]+'</h1>'+
+  '<p class="tf-lead" style="margin-bottom:22px;">'+d[2]+'</p>'+
+  '<div class="tf-card"><p class="tf-card-title">'+d[0]+'</p>'+
+  '<div class="tf-callout tf-callout-teal">This section is part of the TrustFile plan and is being built. The navigation and structure are in place.</div></div>';
+document.title='TrustFile · '+d[0]+' | Concept Wealth';
+var sc=document.createElement('script'); sc.src='js/tf-shell.js'; sc.setAttribute('data-title',d[0]); document.body.appendChild(sc);
+</script>
+</body>
+</html>
