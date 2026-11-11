@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loan Repayment | Concept Wealth</title>
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script><script src="js/calc.js"></script>
+<style>.ec-results{position:sticky;top:86px;}@media(max-width:820px){.ec-results{position:static;}}
+.ec-total-card{background:var(--teal-deep);border:none;color:#fff;}.ec-total-card .tf-stat-label{color:rgba(255,255,255,.7);}.ec-total-card .tf-stat-value{color:#fff;}.ec-total-card .tf-stat-sub{color:rgba(255,255,255,.75);}</style>
+</head>
+<body>
+<div class="tf-wrap">
+  <span class="tf-eyebrow">Borrow</span>
+  <h1 class="tf-h2">What your loan really costs</h1>
+  <p class="tf-lead" style="margin-bottom:24px;">Your monthly repayment, the total interest, and what paying a little extra saves you.</p>
+  <div class="tf-grid-2">
+    <div class="tf-card tf-card-pad-lg">
+      <p class="tf-group-label">Your loan</p>
+      <div class="tf-field"><label class="tf-label" for="principal">Loan amount</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="principal" inputmode="decimal" value="1 500 000"></div></div>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="rate">Interest rate (% p.a.)</label><input class="tf-input" id="rate" inputmode="decimal" value="11.75"></div>
+        <div class="tf-field"><label class="tf-label" for="term">Term (years)</label><input class="tf-input" id="term" inputmode="decimal" value="20"></div>
+      </div>
+      <hr class="tf-divider">
+      <p class="tf-group-label">Pay it off faster (optional)</p>
+      <div class="tf-field"><label class="tf-label" for="extra">Extra each month</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="extra" inputmode="decimal" value="0"></div><div class="tf-hint">Even a small amount cuts years and interest off a bond.</div></div>
+    </div>
+    <div class="ec-results tf-stack">
+      <div class="tf-card tf-card-pad-lg ec-total-card">
+        <div class="tf-stat-label">Monthly repayment</div>
+        <div class="tf-stat-value" id="rPay">R 0</div>
+        <div class="tf-stat-sub" id="rPaySub">—</div>
+      </div>
+      <div class="tf-card">
+        <p class="tf-card-title">Over the loan</p>
+        <div class="tf-row"><span class="tf-row-k">Total repaid</span><span class="tf-row-v" id="rTotal">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Total interest</span><span class="tf-row-v red" id="rInt">R 0</span></div>
+        <div class="tf-row total"><span class="tf-row-k">Interest vs loan</span><span class="tf-row-v" id="rRatio">0%</span></div>
+      </div>
+      <div id="extraCard"></div>
+      <div class="tf-card"><button class="tf-btn tf-btn-ghost tf-btn-block" id="saveBtn">Save to my profile</button></div>
+    </div>
+  </div>
+</div>
+<script src="js/topbar.js" data-page="tools"></script>
+<script>
+function payoff(P, mRate, pay){ // returns {months, interest}
+  if(pay<=P*mRate) return {months:Infinity, interest:Infinity};
+  var bal=P, months=0, interest=0, cap=100*12;
+  while(bal>0.005 && months<cap){ var i=bal*mRate; interest+=i; bal=bal+i-pay; months++; }
+  return {months:months, interest:interest};
+}
+var LAST=null;
+function calc(){
+  var P=CW.gA('principal'), rate=CW.gN('rate')/100, term=CW.gN('term'), extra=CW.gA('extra');
+  var mRate=rate/12, n=Math.round(term*12);
+  var pay = (mRate>0) ? P*mRate/(1-Math.pow(1+mRate,-n)) : P/n;
+  var totalPaid=pay*n, interest=totalPaid-P;
+  document.getElementById('rPay').textContent=CW.fmtR(pay);
+  document.getElementById('rPaySub').textContent='Over '+term+' years';
+  document.getElementById('rTotal').textContent=CW.fmtR(totalPaid);
+  document.getElementById('rInt').textContent=CW.fmtR(interest);
+  document.getElementById('rRatio').textContent=CW.fmtPct(P>0?interest/P*100:0,0);
+  var ec=document.getElementById('extraCard');
+  if(extra>0){
+    var base=payoff(P,mRate,pay), fast=payoff(P,mRate,pay+extra);
+    var monthsSaved=base.months-fast.months, intSaved=base.interest-fast.interest;
+    ec.innerHTML='<div class="tf-card"><p class="tf-card-title">Paying '+CW.fmtR(extra)+' extra</p>'+
+      '<div class="tf-row"><span class="tf-row-k">Paid off in</span><span class="tf-row-v teal">'+Math.floor(fast.months/12)+'y '+(fast.months%12)+'m</span></div>'+
+      '<div class="tf-row"><span class="tf-row-k">Time saved</span><span class="tf-row-v green">'+Math.floor(monthsSaved/12)+'y '+(monthsSaved%12)+'m</span></div>'+
+      '<div class="tf-row total"><span class="tf-row-k">Interest saved</span><span class="tf-row-v green">'+CW.fmtR(intSaved)+'</span></div></div>';
+  } else ec.innerHTML='';
+  LAST={inputs:{principal:P,rate:CW.gN('rate'),term:term,extra:extra},results:{pay:pay,interest:interest},summary:'Loan '+CW.fmtR(pay)+'/mo, interest '+CW.fmtR(interest)};
+}
+CW.bind(['principal','rate','term','extra'], calc, ['principal','extra']);
+document.getElementById('saveBtn').addEventListener('click',function(){ if(LAST) CW.save('loan',LAST); });
+calc();
+</script>
+</body>
+</html>

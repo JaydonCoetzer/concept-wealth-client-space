@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Net Worth | Concept Wealth</title>
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script><script src="js/calc.js"></script>
+<style>.ec-results{position:sticky;top:86px;}@media(max-width:820px){.ec-results{position:static;}}
+.ec-total-card{background:var(--teal-deep);border:none;color:#fff;}.ec-total-card .tf-stat-label{color:rgba(255,255,255,.7);}.ec-total-card .tf-stat-value{color:#fff;}.ec-total-card .tf-stat-sub{color:rgba(255,255,255,.75);}</style>
+</head>
+<body>
+<div class="tf-wrap">
+  <span class="tf-eyebrow">Plan</span>
+  <h1 class="tf-h2">What you are worth today</h1>
+  <p class="tf-lead" style="margin-bottom:24px;">Everything you own, less everything you owe. The number to grow over time.</p>
+  <div class="tf-grid-2">
+    <div class="tf-card tf-card-pad-lg">
+      <p class="tf-group-label">What you own</p>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="a_prop">Property</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="a_prop" inputmode="decimal" value="2 500 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="a_ret">Retirement funds</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="a_ret" inputmode="decimal" value="1 800 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="a_inv">Investments &amp; TFSA</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="a_inv" inputmode="decimal" value="600 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="a_cash">Cash &amp; savings</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="a_cash" inputmode="decimal" value="150 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="a_veh">Vehicles</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="a_veh" inputmode="decimal" value="350 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="a_other">Other assets</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="a_other" inputmode="decimal" value="100 000"></div></div>
+      </div>
+      <hr class="tf-divider">
+      <p class="tf-group-label">What you owe</p>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="l_bond">Home loan</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="l_bond" inputmode="decimal" value="1 400 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="l_veh">Vehicle finance</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="l_veh" inputmode="decimal" value="220 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="l_loan">Loans</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="l_loan" inputmode="decimal" value="0"></div></div>
+        <div class="tf-field"><label class="tf-label" for="l_card">Credit &amp; store cards</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="l_card" inputmode="decimal" value="45 000"></div></div>
+      </div>
+    </div>
+    <div class="ec-results tf-stack">
+      <div class="tf-card tf-card-pad-lg ec-total-card">
+        <div class="tf-stat-label">Your net worth</div>
+        <div class="tf-stat-value" id="rNet">R 0</div>
+        <div class="tf-stat-sub" id="rNetSub">—</div>
+      </div>
+      <div class="tf-card">
+        <p class="tf-card-title">The picture</p>
+        <div class="tf-row"><span class="tf-row-k">Total assets</span><span class="tf-row-v green" id="rAssets">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Total debts</span><span class="tf-row-v red" id="rLiab">R 0</span></div>
+        <div class="tf-row total"><span class="tf-row-k">Net worth</span><span class="tf-row-v teal" id="rNet2">R 0</span></div>
+      </div>
+      <div class="tf-card"><button class="tf-btn tf-btn-ghost tf-btn-block" id="saveBtn">Save to my profile</button></div>
+    </div>
+  </div>
+</div>
+<script src="js/topbar.js" data-page="tools"></script>
+<script>
+var A=['a_prop','a_ret','a_inv','a_cash','a_veh','a_other'], L=['l_bond','l_veh','l_loan','l_card'];
+var LAST=null;
+function calc(){
+  var assets=0; A.forEach(function(id){assets+=CW.gA(id);}); var liab=0; L.forEach(function(id){liab+=CW.gA(id);});
+  var net=assets-liab;
+  LAST={inputs:{},results:{assets:assets,liab:liab,net:net},summary:'Net worth '+CW.fmtR(net)};
+  document.getElementById('rNet').textContent=CW.fmtR(net);
+  document.getElementById('rNet2').textContent=CW.fmtR(net);
+  document.getElementById('rNetSub').textContent=assets>0?Math.round(liab/assets*100)+'% of your assets are financed':'—';
+  document.getElementById('rAssets').textContent=CW.fmtR(assets);
+  document.getElementById('rLiab').textContent=CW.fmtR(liab);
+}
+CW.bind(A.concat(L), calc, A.concat(L));
+document.getElementById('saveBtn').addEventListener('click',function(){ if(LAST) CW.save('net_worth',LAST); });
+calc();
+</script>
+</body>
+</html>

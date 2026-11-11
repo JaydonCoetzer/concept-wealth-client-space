@@ -17,14 +17,14 @@
 <script src="js/topbar.js" data-page="tools"></script>
 <script>
 var GROUPS=[
-  {name:'Plan',    items:[['Retirement','soon'],['Savings goal','soon'],['Net worth','soon'],['Budget','soon']]},
-  {name:'Tax',     items:[['Income tax','soon'],['Investment tax (CGT)','soon'],['RA fee drag','soon']]},
-  {name:'Protect', items:[['Life cover','soon'],['Estate costs','live']]},
-  {name:'Borrow',  items:[['Loan / bond repayment','soon']]}
+  {name:'Plan',    items:[['Retirement','soon','#'],['Savings','live','savings_calculator.html'],['Net worth','live','net_worth_calculator.html'],['Budget','live','budget_planner.html']]},
+  {name:'Tax',     items:[['Income tax','live','income_tax_calculator.html'],['Investment tax (CGT)','soon','#'],['RA fee drag','soon','#']]},
+  {name:'Protect', items:[['Life cover','soon','#'],['Estate costs','live','estate_cost_calculator.html']]},
+  {name:'Borrow',  items:[['Loan / bond repayment','live','loan_repayment_calculator.html']]}
 ];
 document.getElementById('groups').innerHTML=GROUPS.map(function(g){
   return '<p class="tf-card-title" style="margin:0 0 12px 2px;">'+g.name+'</p><div class="tiles" style="margin-bottom:22px;">'+
-    g.items.map(function(it){ var live=it[1]==='live'; var href=live?'estate_cost_calculator.html':'#';
+    g.items.map(function(it){ var live=it[1]==='live'; var href=live?it[2]:'#';
       return '<a class="tile" href="'+href+'"'+(live?'':' style="opacity:.6"')+'><div class="tile-name">'+it[0]+'</div>'+
         '<div class="tile-sub"><span class="tf-tag '+(live?'tf-tag-green':'tf-tag-teal')+'" style="font-size:10.5px;padding:2px 8px;">'+(live?'Live':'Coming soon')+'</span></div></a>';
     }).join('')+'</div>';

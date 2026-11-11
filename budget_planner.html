@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Planner | Concept Wealth</title>
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script><script src="js/calc.js"></script>
+<style>.ec-results{position:sticky;top:86px;}@media(max-width:820px){.ec-results{position:static;}}
+.ec-total-card{background:var(--teal-deep);border:none;color:#fff;}.ec-total-card .tf-stat-label{color:rgba(255,255,255,.7);}.ec-total-card .tf-stat-value{color:#fff;}.ec-total-card .tf-stat-sub{color:rgba(255,255,255,.75);}</style>
+</head>
+<body>
+<div class="tf-wrap">
+  <span class="tf-eyebrow">Plan</span>
+  <h1 class="tf-h2">Where your money goes</h1>
+  <p class="tf-lead" style="margin-bottom:24px;">A simple monthly budget. What comes in, what goes out, and what is left to build with.</p>
+  <div class="tf-grid-2">
+    <div class="tf-card tf-card-pad-lg">
+      <p class="tf-group-label">Money in</p>
+      <div class="tf-field"><label class="tf-label" for="income">Monthly take-home income</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="income" inputmode="decimal" value="45 000"></div></div>
+      <hr class="tf-divider">
+      <p class="tf-group-label">Money out (monthly)</p>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="e_home">Home (bond / rent)</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="e_home" inputmode="decimal" value="12 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="e_transport">Transport</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="e_transport" inputmode="decimal" value="6 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="e_food">Groceries &amp; home</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="e_food" inputmode="decimal" value="7 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="e_debt">Debt repayments</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="e_debt" inputmode="decimal" value="3 500"></div></div>
+        <div class="tf-field"><label class="tf-label" for="e_ins">Insurance &amp; medical</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="e_ins" inputmode="decimal" value="4 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="e_save">Savings &amp; investing</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="e_save" inputmode="decimal" value="4 000"></div></div>
+      </div>
+      <div class="tf-field"><label class="tf-label" for="e_other">Everything else</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="e_other" inputmode="decimal" value="5 000"></div></div>
+    </div>
+    <div class="ec-results tf-stack">
+      <div class="tf-card tf-card-pad-lg ec-total-card">
+        <div class="tf-stat-label">Left each month</div>
+        <div class="tf-stat-value" id="rLeft">R 0</div>
+        <div class="tf-stat-sub" id="rLeftSub">—</div>
+      </div>
+      <div class="tf-card">
+        <p class="tf-card-title">Your month</p>
+        <div class="tf-row"><span class="tf-row-k">Income</span><span class="tf-row-v" id="rIn">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Total spending</span><span class="tf-row-v" id="rOut">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Going to savings</span><span class="tf-row-v teal" id="rSave">R 0</span></div>
+        <div class="tf-row total"><span class="tf-row-k">Savings rate</span><span class="tf-row-v" id="rRate">0%</span></div>
+      </div>
+      <div id="note"></div>
+      <div class="tf-card"><button class="tf-btn tf-btn-ghost tf-btn-block" id="saveBtn">Save to my profile</button></div>
+    </div>
+  </div>
+</div>
+<script src="js/topbar.js" data-page="tools"></script>
+<script>
+var EXP=['e_home','e_transport','e_food','e_debt','e_ins','e_save','e_other'];
+var LAST=null;
+function calc(){
+  var inc=CW.gA('income'); var out=0; EXP.forEach(function(id){ out+=CW.gA(id); });
+  var save=CW.gA('e_save'); var left=inc-out; var rate=inc>0?(save+Math.max(0,left))/inc*100:0;
+  LAST={inputs:{income:inc},results:{out:out,left:left,rate:rate},summary:'Budget: '+CW.fmtR(left)+' left, saving '+CW.fmtPct(rate)};
+  document.getElementById('rLeft').textContent=CW.fmtR(left);
+  document.getElementById('rLeft').style.color = left<0?'#ffd2cf':'#fff';
+  document.getElementById('rLeftSub').textContent = left<0?'You are spending more than you earn':'After all spending';
+  document.getElementById('rIn').textContent=CW.fmtR(inc);
+  document.getElementById('rOut').textContent=CW.fmtR(out);
+  document.getElementById('rSave').textContent=CW.fmtR(save);
+  document.getElementById('rRate').textContent=CW.fmtPct(rate);
+  var n=document.getElementById('note');
+  if(left<0) n.innerHTML='<div class="tf-callout tf-callout-amber">Your spending is <b>'+CW.fmtR(-left)+'</b> more than your income. Trimming the biggest categories, or a debt review, will help.</div>';
+  else if(rate<10) n.innerHTML='<div class="tf-callout tf-callout-amber">You are saving under 10%. Even a small automatic increase compounds over time.</div>';
+  else n.innerHTML='<div class="tf-callout tf-callout-teal">A healthy savings rate. Keep it automatic and let it grow.</div>';
+}
+CW.bind(['income'].concat(EXP), calc, ['income'].concat(EXP));
+document.getElementById('saveBtn').addEventListener('click',function(){ if(LAST) CW.save('budget',LAST); });
+calc();
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Income Tax | Concept Wealth</title>
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script>
+<script src="js/calc.js"></script>
+<style>.ec-results{position:sticky;top:86px;}@media(max-width:820px){.ec-results{position:static;}}
+.ec-total-card{background:var(--teal-deep);border:none;color:#fff;}.ec-total-card .tf-stat-label{color:rgba(255,255,255,.7);}.ec-total-card .tf-stat-value{color:#fff;}.ec-total-card .tf-stat-sub{color:rgba(255,255,255,.75);}</style>
+</head>
+<body>
+<div class="tf-wrap">
+  <span class="tf-eyebrow">Tax</span>
+  <h1 class="tf-h2">Your take-home pay</h1>
+  <p class="tf-lead" style="margin-bottom:24px;">PAYE, take-home and your effective rate on the SARS 2026/27 tables. An estimate, not advice.</p>
+  <div class="tf-grid-2">
+    <div class="tf-card tf-card-pad-lg">
+      <p class="tf-group-label">Your income</p>
+      <div class="tf-field"><label class="tf-label" for="income">Monthly gross income</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="income" inputmode="decimal" value="45 000"></div></div>
+      <div class="tf-field"><label class="tf-label" for="age">Your age</label><select class="tf-select" id="age"><option value="u65">Under 65</option><option value="65">65 to 74</option><option value="75">75 or older</option></select></div>
+      <hr class="tf-divider">
+      <p class="tf-group-label">Deductions (optional)</p>
+      <div class="tf-field"><label class="tf-label" for="ra">Monthly retirement contribution</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="ra" inputmode="decimal" value="0"></div><div class="tf-hint">Pension, provident or RA. Deductible up to 27.5% of income, capped at R350 000 a year.</div></div>
+      <div class="tf-field"><label class="tf-label" for="med">Medical aid members (incl. you)</label><input class="tf-input" id="med" inputmode="numeric" value="0"><div class="tf-hint">Medical tax credits: R364 for the first two, R246 each after.</div></div>
+    </div>
+    <div class="ec-results tf-stack">
+      <div class="tf-card tf-card-pad-lg ec-total-card">
+        <div class="tf-stat-label">Monthly take-home</div>
+        <div class="tf-stat-value" id="rNet">R 0</div>
+        <div class="tf-stat-sub" id="rNetSub">—</div>
+      </div>
+      <div class="tf-card">
+        <p class="tf-card-title">The detail</p>
+        <div class="tf-row"><span class="tf-row-k">Annual gross</span><span class="tf-row-v" id="rGross">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Taxable income<small>After retirement deduction</small></span><span class="tf-row-v" id="rTaxable">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Annual tax (PAYE)</span><span class="tf-row-v red" id="rTax">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Monthly tax</span><span class="tf-row-v red" id="rTaxM">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Effective rate</span><span class="tf-row-v" id="rEff">0%</span></div>
+        <div class="tf-row total"><span class="tf-row-k">Marginal rate</span><span class="tf-row-v teal" id="rMarg">0%</span></div>
+      </div>
+      <div class="tf-card"><button class="tf-btn tf-btn-ghost tf-btn-block" id="saveBtn">Save to my profile</button></div>
+    </div>
+  </div>
+  <p class="tf-assume" style="margin-top:18px;">SARS 2026/27: brackets 18% to R245 100, 26% to R383 100, 31% to R530 200, 36% to R695 800, 39% to R887 000, 41% to R1 878 600, 45% above. Primary rebate R17 820, +R9 765 at 65, +R3 249 at 75. Estimate only, not advice.</p>
+</div>
+<script src="js/topbar.js" data-page="tools"></script>
+<script>
+var BR=[{f:0,b:0,r:.18},{f:245100,b:44118,r:.26},{f:383100,b:79998,r:.31},{f:530200,b:125599,r:.36},{f:695800,b:185215,r:.39},{f:887000,b:259783,r:.41},{f:1878600,b:666339,r:.45}];
+function grossTax(ti){ if(ti<=0) return 0; var b=BR[0]; for(var i=0;i<BR.length;i++){ if(ti>=BR[i].f) b=BR[i]; } return b.b+(ti-b.f)*b.r; }
+function marginal(ti){ var r=0; for(var i=0;i<BR.length;i++){ if(ti>=BR[i].f) r=BR[i].r; } return r*100; }
+function rebate(age){ var r=17820; if(age==='65'||age==='75') r+=9765; if(age==='75') r+=3249; return r; }
+function threshold(age){ return age==='75'?171300:age==='65'?153250:99000; }
+function medCredit(n){ n=Math.max(0,Math.round(n)); return (364*Math.min(n,2)+246*Math.max(0,n-2))*12; }
+
+var LAST=null;
+function calc(){
+  var gross=CW.gA('income')*12, age=CW.gV('age'), raA=CW.gA('ra')*12, med=CW.gN('med');
+  var ded=Math.min(raA, gross*0.275, 350000);
+  var ti=Math.max(0, gross-ded);
+  var tax=0;
+  if(ti>threshold(age)) tax=Math.max(0, grossTax(ti)-rebate(age)-medCredit(med));
+  var net=gross-tax, eff=gross>0?tax/gross*100:0;
+  LAST={inputs:{income:CW.gA('income'),age:age,ra:CW.gA('ra'),med:med},results:{annualTax:tax,taxable:ti,net:net,eff:eff},summary:'Take-home '+CW.fmtR(net/12)+'/mo, effective '+CW.fmtPct(eff)};
+  document.getElementById('rNet').textContent=CW.fmtR(net/12);
+  document.getElementById('rNetSub').textContent='Annual: '+CW.fmtR(net);
+  document.getElementById('rGross').textContent=CW.fmtR(gross);
+  document.getElementById('rTaxable').textContent=CW.fmtR(ti);
+  document.getElementById('rTax').textContent=CW.fmtR(tax);
+  document.getElementById('rTaxM').textContent=CW.fmtR(tax/12);
+  document.getElementById('rEff').textContent=CW.fmtPct(eff);
+  document.getElementById('rMarg').textContent=CW.fmtPct(ti>threshold(age)?marginal(ti):0,0);
+}
+CW.bind(['income','age','ra','med'], calc, ['income','ra']);
+document.getElementById('saveBtn').addEventListener('click',function(){ if(LAST) CW.save('income_tax',LAST); });
+calc();
+</script>
+</body>
+</html>
