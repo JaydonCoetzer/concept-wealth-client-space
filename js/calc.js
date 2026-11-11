@@ -12,15 +12,24 @@ var CW = (function () {
   function gV(id){ var e=document.getElementById(id); return e?e.value:''; }
   function fmtField(el){ var v=pAmt(el.value); el.value = v ? v.toLocaleString('en-ZA').replace(/,/g,' ') : (el.value===''?'':'0'); }
 
-  // Attach live-calc to a list of ids; money ids also format on blur.
+  // Wire inputs + the Calculate button. Results update ONLY when the user
+  // clicks Calculate (id="calcBtn") or presses Enter — not on every keystroke.
+  // Changing an input marks the Calculate button so it is clear an update is due.
   function bind(ids, cb, moneyIds){
     moneyIds = moneyIds || [];
+    var btn = document.getElementById('calcBtn');
+    function run(){ cb(); if(btn) btn.classList.remove('dirty'); }
+    function dirty(){ if(btn) btn.classList.add('dirty'); }
     ids.forEach(function(id){
       var el=document.getElementById(id); if(!el) return;
-      var ev = (el.tagName==='SELECT') ? 'change' : 'input';
-      el.addEventListener(ev, cb);
       if(moneyIds.indexOf(id)>-1) el.addEventListener('blur', function(){ fmtField(el); });
+      el.addEventListener('input', dirty);
+      el.addEventListener('change', dirty);
+      el.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); run(); } });
     });
+    if(btn) btn.addEventListener('click', run);
+    cb(); // show an initial result for the default inputs
+    return run;
   }
 
   // Save to the client profile (prompts for name/email if none yet).

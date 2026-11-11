@@ -176,6 +176,8 @@ a:hover{text-decoration:underline;}
 .tf-btn-sm{height:38px;font-size:13.5px;padding:0 15px;border-radius:9px;}
 .tf-btn-block{width:100%;}
 .tf-btn-lg{height:54px;font-size:16px;padding:0 26px;}
+.tf-btn.dirty{box-shadow:0 0 0 3px rgba(0,118,206,.22);}
+.tf-btn.dirty::after{content:'';width:7px;height:7px;border-radius:50%;background:var(--amber);margin-left:2px;}
 
 /* ── Result rows ─────────────────────────────────────── */
 .tf-row{display:flex;align-items:baseline;justify-content:space-between;gap:16px;

@@ -184,8 +184,9 @@
 
       <div class="tf-card">
         <div class="ec-cta">
-          <a class="tf-btn tf-btn-primary tf-btn-block" id="bookBtn" href="#">Book a 20-minute review</a>
+          <button class="tf-btn tf-btn-primary tf-btn-block" id="calcBtn" type="button">Calculate</button>
           <button class="tf-btn tf-btn-ghost tf-btn-block" id="saveBtn" type="button">Save to my profile</button>
+          <a class="tf-btn tf-btn-ghost tf-btn-block" id="bookBtn" href="#">Book a 20-minute review</a>
         </div>
         <details class="ec-assume" style="margin-top:16px;">
           <summary>Assumptions &amp; sources</summary>
@@ -375,14 +376,18 @@ function suggestConvey(){
 }
 
 // ── Wiring ───────────────────────────────────────────────
+function markDirty(){ var b=document.getElementById('calcBtn'); if(b) b.classList.add('dirty'); }
+function runCalc(){ calc(); var b=document.getElementById('calcBtn'); if(b) b.classList.remove('dirty'); }
 ['property','investments','cash','other','retireToEstate','liabilities','funeral',
  'spouseBequest','gains','conveyancing'].forEach(function(id){
   const el = document.getElementById(id);
-  el.addEventListener('input', function(){ if(id==='conveyancing') el.dataset.touched='1'; if(id==='property') suggestConvey(); calc(); });
+  el.addEventListener('input', function(){ if(id==='conveyancing') el.dataset.touched='1'; if(id==='property') suggestConvey(); markDirty(); });
   el.addEventListener('blur', function(){ const v = pAmt(el.value); el.value = v ? v.toLocaleString('en-ZA').replace(/,/g,' ') : '0'; });
+  el.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); runCalc(); } });
 });
-['regime','will'].forEach(function(id){ document.getElementById(id).addEventListener('change', calc); });
-document.getElementById('portable').addEventListener('change', calc);
+['regime','will'].forEach(function(id){ document.getElementById(id).addEventListener('change', markDirty); });
+document.getElementById('portable').addEventListener('change', markDirty);
+document.getElementById('calcBtn').addEventListener('click', runCalc);
 
 document.getElementById('bookBtn').setAttribute('href', ADVISOR_CONTACT);
 
