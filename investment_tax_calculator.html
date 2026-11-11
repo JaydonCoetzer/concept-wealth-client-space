@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investment Tax | Concept Wealth</title>
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script><script src="js/calc.js"></script>
+<style>.ec-results{position:sticky;top:86px;}@media(max-width:820px){.ec-results{position:static;}}
+.ec-total-card{background:var(--teal-deep);border:none;color:#fff;}.ec-total-card .tf-stat-label{color:rgba(255,255,255,.7);}.ec-total-card .tf-stat-value{color:#fff;}.ec-total-card .tf-stat-sub{color:rgba(255,255,255,.75);}
+input[type=range]{width:100%;accent-color:var(--teal);}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.cmp .tf-card.hi{border-color:var(--teal);}</style>
+</head>
+<body>
+<div class="tf-wrap">
+  <span class="tf-eyebrow">Tax</span>
+  <h1 class="tf-h2">Why growth is taxed lighter than interest</h1>
+  <p class="tf-lead" style="margin-bottom:24px;">The same money, taxed two ways. See what a balanced investment keeps versus leaving it in the bank. An estimate, not advice.</p>
+  <div class="tf-grid-2">
+    <div class="tf-card tf-card-pad-lg">
+      <p class="tf-group-label">Your money</p>
+      <div class="tf-field"><label class="tf-label" for="amount">Amount to invest</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="amount" inputmode="decimal" value="1 000 000"></div></div>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="income">Annual income</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="income" inputmode="decimal" value="700 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="age">Your age</label><input class="tf-input" id="age" inputmode="decimal" value="45"></div>
+      </div>
+      <div class="tf-field"><label class="tf-label">Marginal tax rate</label>
+        <div class="tf-callout tf-callout-teal" style="display:flex;justify-content:space-between;"><span>At your income</span><b id="margShow">0%</b></div>
+      </div>
+      <hr class="tf-divider">
+      <div class="tf-field"><label class="tf-label" for="split">Balanced split: <span id="splitLbl">50% shares / 50% interest</span></label>
+        <input type="range" id="split" min="0" max="100" step="10" value="50">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px;"><span>All interest</span><span>All shares</span></div>
+      </div>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="years">Years invested</label><input class="tf-input" id="years" inputmode="decimal" value="30"></div>
+        <div class="tf-field"><label class="tf-label" for="exempt">Annual exemptions</label>
+          <select class="tf-select" id="exempt"><option value="apply">Apply exemptions</option><option value="used">Already used</option></select></div>
+      </div>
+      <div class="tf-hint">Assumes bank/interest 7% a year, shares/growth 10% a year. Interest exemption R23 800 (R34 500 at 65+), CGT exclusion R50 000, 40% inclusion.</div>
+    </div>
+    <div class="ec-results tf-stack">
+      <div class="tf-card tf-card-pad-lg ec-total-card">
+        <div class="tf-stat-label">Balanced keeps more, after tax</div>
+        <div class="tf-stat-value" id="rDiff">R 0</div>
+        <div class="tf-stat-sub" id="rDiffSub">—</div>
+      </div>
+      <div class="cmp">
+        <div class="tf-card"><div class="tf-stat-label">All in the bank</div><div class="tf-stat-value" id="rBank" style="font-size:22px;">R 0</div>
+          <div class="tf-row" style="margin-top:8px;"><span class="tf-row-k">Tax paid</span><span class="tf-row-v red" id="rBankTax">R 0</span></div>
+          <div class="tf-row"><span class="tf-row-k">Eff. tax</span><span class="tf-row-v" id="rBankEff">0%</span></div></div>
+        <div class="tf-card hi"><div class="tf-stat-label" style="color:var(--teal)">Balanced</div><div class="tf-stat-value teal" id="rBal" style="font-size:22px;">R 0</div>
+          <div class="tf-row" style="margin-top:8px;"><span class="tf-row-k">Tax paid</span><span class="tf-row-v red" id="rBalTax">R 0</span></div>
+          <div class="tf-row"><span class="tf-row-k">Eff. tax</span><span class="tf-row-v" id="rBalEff">0%</span></div></div>
+      </div>
+      <div class="tf-card"><button class="tf-btn tf-btn-ghost tf-btn-block" id="saveBtn">Save to my profile</button></div>
+    </div>
+  </div>
+</div>
+<script src="js/topbar.js" data-page="tools"></script>
+<script>
+var BR=[{f:0,r:.18},{f:245100,r:.26},{f:383100,r:.31},{f:530200,r:.36},{f:695800,r:.39},{f:887000,r:.41},{f:1878600,r:.45}];
+function marginal(inc){ var r=.18; for(var i=0;i<BR.length;i++) if(inc>=BR[i].f) r=BR[i].r; return r; }
+var BANK=0.07, GROWTH=0.10;
+// interest pot: taxed yearly on (interest - exemption) at marginal
+function interestPot(principal, marg, years, exemption){
+  var bal=principal, tax=0;
+  for(var y=0;y<years;y++){ var intr=bal*BANK; var t=Math.max(0,(intr-exemption))*marg; tax+=t; bal+=intr-t; }
+  return {value:bal, tax:tax};
+}
+var LAST=null;
+function calc(){
+  var amount=CW.gA('amount'), income=CW.gA('income'), age=CW.gN('age'),
+      split=CW.gN('split'), years=Math.max(1,CW.gN('years')), applyEx=CW.gV('exempt')==='apply';
+  var marg=marginal(income);
+  var intExempt = applyEx ? (age>=65?34500:23800) : 0;
+  var cgtExcl   = applyEx ? 50000 : 0;
+  document.getElementById('margShow').textContent=CW.fmtPct(marg*100,0);
+  document.getElementById('splitLbl').textContent=split+'% shares / '+(100-split)+'% interest';
+
+  // All in bank
+  var bank=interestPot(amount, marg, years, intExempt);
+
+  // Balanced: growth part (CGT at end) + interest part (annual)
+  var gPart=amount*split/100, iPart=amount-gPart;
+  var gValue=gPart*Math.pow(1+GROWTH,years);
+  var gain=gValue-gPart;
+  var cgt=Math.max(0,(gain-cgtExcl))*0.40*marg;
+  var gAfter=gValue-cgt;
+  var ip=interestPot(iPart, marg, years, intExempt);
+  var balValue=gAfter+ip.value, balTax=cgt+ip.tax;
+
+  var diff=balValue-bank.value;
+  document.getElementById('rBank').textContent=CW.fmtR(bank.value);
+  document.getElementById('rBankTax').textContent=CW.fmtR(bank.tax);
+  document.getElementById('rBankEff').textContent=CW.fmtPct((bank.value+bank.tax-amount)>0?bank.tax/(bank.value+bank.tax-amount)*100:0,0);
+  document.getElementById('rBal').textContent=CW.fmtR(balValue);
+  document.getElementById('rBalTax').textContent=CW.fmtR(balTax);
+  var balGain=(balValue+balTax-amount);
+  document.getElementById('rBalEff').textContent=CW.fmtPct(balGain>0?balTax/balGain*100:0,0);
+  document.getElementById('rDiff').textContent=CW.fmtR(Math.abs(diff));
+  document.getElementById('rDiffSub').textContent='After '+years+' years · '+(bank.value>0?Math.round(diff/bank.value*100):0)+'% more than the bank';
+  LAST={inputs:{amount:amount,income:income,age:age,split:split,years:years},results:{bank:bank.value,balanced:balValue,diff:diff},summary:'Balanced keeps '+CW.fmtR(diff)+' more than the bank over '+years+'y'};
+}
+CW.bind(['amount','income','age','split','years','exempt'], calc, ['amount','income']);
+document.getElementById('saveBtn').addEventListener('click',function(){ if(LAST) CW.save('investment_tax',LAST); });
+calc();
+</script>
+</body>
+</html>

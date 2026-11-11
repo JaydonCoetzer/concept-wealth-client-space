@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fee &amp; Growth Comparison | Concept Wealth</title>
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script><script src="js/calc.js"></script>
+<style>.ec-results{position:sticky;top:86px;}@media(max-width:820px){.ec-results{position:static;}}
+.ec-total-card{background:var(--teal-deep);border:none;color:#fff;}.ec-total-card .tf-stat-label{color:rgba(255,255,255,.7);}.ec-total-card .tf-stat-value{color:#fff;}.ec-total-card .tf-stat-sub{color:rgba(255,255,255,.75);}</style>
+</head>
+<body>
+<div class="tf-wrap">
+  <span class="tf-eyebrow">Tax &amp; fees</span>
+  <h1 class="tf-h2">What fees cost you over a lifetime</h1>
+  <p class="tf-lead" style="margin-bottom:24px;">A small difference in fees or growth, compounded for decades, changes the outcome a lot. An estimate, not advice.</p>
+  <div class="tf-grid-2">
+    <div class="tf-card tf-card-pad-lg">
+      <p class="tf-group-label">Your retirement savings</p>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="age">Current age</label><input class="tf-input" id="age" inputmode="decimal" value="40"></div>
+        <div class="tf-field"><label class="tf-label" for="ret">Retirement age</label><input class="tf-input" id="ret" inputmode="decimal" value="65"></div>
+      </div>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="current">Current value</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="current" inputmode="decimal" value="800 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="monthly">Monthly contribution</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="monthly" inputmode="decimal" value="5 000"></div></div>
+      </div>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="fees">Annual fees (%)</label><input class="tf-input" id="fees" inputmode="decimal" value="2.5"></div>
+        <div class="tf-field"><label class="tf-label" for="growth">Growth before fees (%)</label><input class="tf-input" id="growth" inputmode="decimal" value="11"></div>
+      </div>
+      <hr class="tf-divider">
+      <p class="tf-group-label">A better deal</p>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="feeCut">Lower fees by (%)</label><input class="tf-input" id="feeCut" inputmode="decimal" value="1"></div>
+        <div class="tf-field"><label class="tf-label" for="growthUp">Improve growth by (%)</label><input class="tf-input" id="growthUp" inputmode="decimal" value="0"></div>
+      </div>
+      <div class="tf-hint">Even a 1% lower fee, with no change to growth, can add years of income.</div>
+    </div>
+    <div class="ec-results tf-stack">
+      <div class="tf-card tf-card-pad-lg ec-total-card">
+        <div class="tf-stat-label">Better off at retirement by</div>
+        <div class="tf-stat-value" id="rDiff">R 0</div>
+        <div class="tf-stat-sub" id="rDiffSub">—</div>
+      </div>
+      <div class="tf-card">
+        <p class="tf-card-title">At retirement</p>
+        <div class="tf-row"><span class="tf-row-k">Current plan<small id="curSub">—</small></span><span class="tf-row-v" id="rCur">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Better plan<small id="betSub">—</small></span><span class="tf-row-v teal" id="rBet">R 0</span></div>
+        <div class="tf-row total"><span class="tf-row-k">Difference</span><span class="tf-row-v green" id="rDiff2">R 0</span></div>
+      </div>
+      <div class="tf-card">
+        <p class="tf-card-title">Monthly income (4% drawdown)</p>
+        <div class="tf-row"><span class="tf-row-k">Current plan</span><span class="tf-row-v" id="rCurInc">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Better plan</span><span class="tf-row-v teal" id="rBetInc">R 0</span></div>
+      </div>
+      <div class="tf-card"><button class="tf-btn tf-btn-ghost tf-btn-block" id="saveBtn">Save to my profile</button></div>
+    </div>
+  </div>
+</div>
+<script src="js/topbar.js" data-page="tools"></script>
+<script>
+function fv(cur, monthly, netAnnual, years){ var mR=Math.pow(1+netAnnual,1/12)-1, bal=cur, n=Math.round(years*12); for(var m=0;m<n;m++){ bal=bal*(1+mR)+monthly; } return bal; }
+var LAST=null;
+function calc(){
+  var age=CW.gN('age'), ret=CW.gN('ret'), cur=CW.gA('current'), monthly=CW.gA('monthly'),
+      fees=CW.gN('fees'), growth=CW.gN('growth'), feeCut=CW.gN('feeCut'), growthUp=CW.gN('growthUp');
+  var years=Math.max(0,ret-age);
+  var netA=(growth-fees)/100, netB=((growth+growthUp)-(fees-feeCut))/100;
+  var A=fv(cur,monthly,netA,years), B=fv(cur,monthly,netB,years), diff=B-A;
+  LAST={inputs:{age:age,ret:ret,current:cur,monthly:monthly,fees:fees,growth:growth},results:{A:A,B:B,diff:diff},summary:'Fee/growth improvement adds '+CW.fmtR(diff)+' by retirement'};
+  document.getElementById('rDiff').textContent=CW.fmtR(diff);
+  document.getElementById('rDiff2').textContent=CW.fmtR(diff);
+  document.getElementById('rDiffSub').textContent='Over '+years+' years · '+(A>0?Math.round(diff/A*100):0)+'% more';
+  document.getElementById('rCur').textContent=CW.fmtR(A);
+  document.getElementById('rBet').textContent=CW.fmtR(B);
+  document.getElementById('curSub').textContent=(growth-fees).toFixed(1)+'% net return';
+  document.getElementById('betSub').textContent=((growth+growthUp)-(fees-feeCut)).toFixed(1)+'% net return';
+  document.getElementById('rCurInc').textContent=CW.fmtR(A*0.04/12);
+  document.getElementById('rBetInc').textContent=CW.fmtR(B*0.04/12);
+}
+CW.bind(['age','ret','current','monthly','fees','growth','feeCut','growthUp'], calc, ['current','monthly']);
+document.getElementById('saveBtn').addEventListener('click',function(){ if(LAST) CW.save('fee_growth',LAST); });
+calc();
+</script>
+</body>
+</html>

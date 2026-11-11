@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Education Savings | Concept Wealth</title>
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script><script src="js/calc.js"></script>
+<style>.ec-results{position:sticky;top:86px;}@media(max-width:820px){.ec-results{position:static;}}
+.ec-total-card{background:var(--teal-deep);border:none;color:#fff;}.ec-total-card .tf-stat-label{color:rgba(255,255,255,.7);}.ec-total-card .tf-stat-value{color:#fff;}.ec-total-card .tf-stat-sub{color:rgba(255,255,255,.75);}</style>
+</head>
+<body>
+<div class="tf-wrap">
+  <span class="tf-eyebrow">Plan</span>
+  <h1 class="tf-h2">Save for your child's education</h1>
+  <p class="tf-lead" style="margin-bottom:24px;">What tertiary study will cost by the time they start, and what to put away each month. An estimate, not advice.</p>
+  <div class="tf-grid-2">
+    <div class="tf-card tf-card-pad-lg">
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="name">Child's name</label><input class="tf-input" id="name" type="text" value="Child"></div>
+        <div class="tf-field"><label class="tf-label" for="age">Current age</label><input class="tf-input" id="age" inputmode="decimal" value="5"></div>
+      </div>
+      <div class="tf-field"><label class="tf-label" for="study">Type of study</label>
+        <select class="tf-select" id="study">
+          <option value="hc">Higher Certificate (1 yr)</option>
+          <option value="dip">Diploma (3 yrs)</option>
+          <option value="trade">Trade / Artisan (2 yrs)</option>
+          <option value="3yr" selected>3-year Degree</option>
+          <option value="4yr">4-year Degree</option>
+          <option value="unisa">UNISA / Distance (4 yrs)</option>
+          <option value="med">Medicine (6 yrs)</option>
+          <option value="overseas">Study overseas (3 yrs)</option>
+        </select>
+      </div>
+      <label style="display:flex;align-items:center;gap:9px;cursor:pointer;margin-top:4px;">
+        <input type="checkbox" id="boarding" style="width:17px;height:17px;accent-color:var(--teal);">
+        <span style="font-size:13.5px;color:var(--ink-2);">Include boarding / residence (~R85 000 a year)</span>
+      </label>
+    </div>
+    <div class="ec-results tf-stack">
+      <div class="tf-card tf-card-pad-lg ec-total-card">
+        <div class="tf-stat-label">Save each month</div>
+        <div class="tf-stat-value" id="rMonthly">R 0</div>
+        <div class="tf-stat-sub" id="rMonthlySub">—</div>
+      </div>
+      <div class="tf-card">
+        <p class="tf-card-title">The plan</p>
+        <div class="tf-row"><span class="tf-row-k">Years until they start</span><span class="tf-row-v" id="rYears">0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Total future cost<small id="costSub">—</small></span><span class="tf-row-v" id="rCost">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">You will contribute</span><span class="tf-row-v" id="rPut">R 0</span></div>
+        <div class="tf-row total"><span class="tf-row-k">Growth does the rest</span><span class="tf-row-v green" id="rGrowth">R 0</span></div>
+      </div>
+      <div id="note"></div>
+      <div class="tf-card"><button class="tf-btn tf-btn-ghost tf-btn-block" id="saveBtn">Save to my profile</button></div>
+    </div>
+  </div>
+  <p class="tf-assume" style="margin-top:18px;">Study starts at 18. Tuition inflates at 6% a year; savings grow at 8% a year. 2026/27 average public tuition. Estimate only, not advice.</p>
+</div>
+<script src="js/topbar.js" data-page="tools"></script>
+<script>
+var STUDY={ hc:{y:1,c:35000,n:'Higher Certificate'}, dip:{y:3,c:48000,n:'Diploma'}, trade:{y:2,c:40000,n:'Trade / Artisan'},
+  '3yr':{y:3,c:65000,n:'3-year Degree'}, '4yr':{y:4,c:78000,n:'4-year Degree'}, unisa:{y:4,c:32000,n:'UNISA / Distance'},
+  med:{y:6,c:105000,n:'Medicine'}, overseas:{y:3,c:650000,n:'Study overseas'} };
+var BOARD=85000, INF=0.06, RET=0.08;
+var LAST=null;
+function calc(){
+  var age=CW.gN('age'), s=STUDY[CW.gV('study')], boarding=document.getElementById('boarding').checked;
+  var yearsLeft=Math.max(0,18-age), months=yearsLeft*12, totalFuture=0;
+  for(var i=0;i<s.y;i++){ var f=Math.pow(1+INF,yearsLeft+i); totalFuture += s.c*f + (boarding?BOARD*f:0); }
+  var mr=RET/12;
+  var monthly = months>0 ? (totalFuture*mr)/(Math.pow(1+mr,months)-1) : totalFuture;
+  var put = months>0 ? monthly*months : totalFuture, growth=totalFuture-put;
+  LAST={inputs:{age:age,study:CW.gV('study'),boarding:boarding},results:{totalFuture:totalFuture,monthly:monthly},summary:'Education: save '+CW.fmtR(monthly)+'/mo for '+CW.fmtR(totalFuture)};
+  document.getElementById('rMonthly').textContent=CW.fmtR(monthly);
+  document.getElementById('rMonthlySub').textContent='For '+(CW.gV('name')||'your child')+' · '+s.n;
+  document.getElementById('rYears').textContent=yearsLeft;
+  document.getElementById('rCost').textContent=CW.fmtR(totalFuture);
+  document.getElementById('costSub').textContent=s.y+' year'+(s.y>1?'s':'')+' of study';
+  document.getElementById('rPut').textContent=CW.fmtR(put);
+  document.getElementById('rGrowth').textContent=CW.fmtR(growth);
+  var n=document.getElementById('note');
+  n.innerHTML = yearsLeft>0
+    ? '<div class="tf-callout tf-callout-teal">Starting now gives you '+yearsLeft+' years of growth. The earlier you begin, the more growth, and the less you have to put in.</div>'
+    : '<div class="tf-callout tf-callout-amber">Studies start about now, so there is little time to save. A study loan or a lump sum may be needed.</div>';
+}
+CW.bind(['name','age','study','boarding'], calc, ['age']);
+document.getElementById('saveBtn').addEventListener('click',function(){ if(LAST) CW.save('edusave',LAST); });
+calc();
+</script>
+</body>
+</html>

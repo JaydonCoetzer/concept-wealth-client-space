@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retirement | Concept Wealth</title>
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script><script src="js/calc.js"></script>
+<style>.ec-results{position:sticky;top:86px;}@media(max-width:820px){.ec-results{position:static;}}
+.ec-total-card{background:var(--teal-deep);border:none;color:#fff;}.ec-total-card .tf-stat-label{color:rgba(255,255,255,.7);}.ec-total-card .tf-stat-value{color:#fff;}.ec-total-card .tf-stat-sub{color:rgba(255,255,255,.75);}</style>
+</head>
+<body>
+<div class="tf-wrap">
+  <span class="tf-eyebrow">Plan</span>
+  <h1 class="tf-h2">Will your money last?</h1>
+  <p class="tf-lead" style="margin-bottom:24px;">What your savings become by retirement, the income they can support, and whether it lasts. An estimate, not advice.</p>
+  <div class="tf-grid-2">
+    <div class="tf-card tf-card-pad-lg">
+      <p class="tf-group-label">You</p>
+      <div class="tf-grid-3" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div class="tf-field"><label class="tf-label" for="age">Age now</label><input class="tf-input" id="age" inputmode="decimal" value="40"></div>
+        <div class="tf-field"><label class="tf-label" for="ret">Retire at</label><input class="tf-input" id="ret" inputmode="decimal" value="65"></div>
+        <div class="tf-field"><label class="tf-label" for="life">Plan to</label><input class="tf-input" id="life" inputmode="decimal" value="90"></div>
+      </div>
+      <hr class="tf-divider">
+      <p class="tf-group-label">Your saving</p>
+      <div class="tf-field"><label class="tf-label" for="current">Current retirement savings</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="current" inputmode="decimal" value="900 000"></div></div>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="monthly">Monthly contribution</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="monthly" inputmode="decimal" value="6 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="esc">Annual increase (%)</label><input class="tf-input" id="esc" inputmode="decimal" value="6"></div>
+      </div>
+      <div class="tf-field"><label class="tf-label" for="income">Income you want (today's money, monthly)</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="income" inputmode="decimal" value="30 000"></div></div>
+      <hr class="tf-divider">
+      <p class="tf-group-label">Assumptions</p>
+      <div class="tf-grid-3" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div class="tf-field"><label class="tf-label" for="preR">Growth before (%)</label><input class="tf-input" id="preR" inputmode="decimal" value="10"></div>
+        <div class="tf-field"><label class="tf-label" for="postR">Growth after (%)</label><input class="tf-input" id="postR" inputmode="decimal" value="8"></div>
+        <div class="tf-field"><label class="tf-label" for="infl">Inflation (%)</label><input class="tf-input" id="infl" inputmode="decimal" value="5.5"></div>
+      </div>
+    </div>
+    <div class="ec-results tf-stack">
+      <div class="tf-card tf-card-pad-lg ec-total-card">
+        <div class="tf-stat-label">Projected fund at retirement</div>
+        <div class="tf-stat-value" id="rFund">R 0</div>
+        <div class="tf-stat-sub" id="rFundSub">—</div>
+      </div>
+      <div id="verdict"></div>
+      <div class="tf-card">
+        <p class="tf-card-title">Your income in retirement (monthly)</p>
+        <div class="tf-row"><span class="tf-row-k">Income you want<small id="wantSub">—</small></span><span class="tf-row-v" id="rWant">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Income your fund supports<small>Lasting to your planning age</small></span><span class="tf-row-v teal" id="rCan">R 0</span></div>
+        <div class="tf-row total"><span class="tf-row-k" id="gapLbl">Monthly shortfall</span><span class="tf-row-v" id="rGap">R 0</span></div>
+      </div>
+      <div class="tf-card"><button class="tf-btn tf-btn-ghost tf-btn-block" id="saveBtn">Save to my profile</button></div>
+    </div>
+  </div>
+  <p class="tf-assume" style="margin-top:18px;">Contributions escalate each year. Income escalates with inflation in retirement. All figures nominal unless stated. Returns are assumed, not guaranteed. Estimate only, not advice.</p>
+</div>
+<script src="js/topbar.js" data-page="tools"></script>
+<script>
+var LAST=null;
+function calc(){
+  var age=CW.gN('age'), ret=CW.gN('ret'), life=CW.gN('life'), current=CW.gA('current'),
+      monthly=CW.gA('monthly'), esc=CW.gN('esc')/100, wantToday=CW.gA('income'),
+      preR=CW.gN('preR')/100, postR=CW.gN('postR')/100, infl=CW.gN('infl')/100;
+  var toRet=Math.max(0,ret-age), retYears=Math.max(1,life-ret);
+
+  // Accumulation
+  var mR=Math.pow(1+preR,1/12)-1, fund=current, mo=monthly;
+  for(var y=0;y<toRet;y++){ for(var m=0;m<12;m++){ fund=fund*(1+mR)+mo; } mo*=(1+esc); }
+
+  // Target income at retirement (nominal)
+  var wantAnnual=wantToday*12*Math.pow(1+infl,toRet);
+
+  // Sustainable first-year income (growing annuity, grows with inflation, lasts retYears)
+  var r=postR, g=infl, n=retYears, sustainAnnual;
+  if(Math.abs(r-g)<1e-6) sustainAnnual=fund/n;
+  else sustainAnnual=fund*(r-g)/(1-Math.pow((1+g)/(1+r),n));
+
+  // Depletion with the wanted income
+  var bal=fund, inc=wantAnnual, dep=null;
+  for(var k=0;k<retYears;k++){ bal=bal*(1+postR)-inc; if(bal<=0){ dep=ret+k+1; break; } inc*=(1+infl); }
+
+  var wantM=wantAnnual/12, canM=Math.max(0,sustainAnnual)/12, gap=wantM-canM;
+  LAST={inputs:{age:age,ret:ret,life:life,current:current,monthly:monthly,wantToday:wantToday},results:{fund:fund,sustainM:canM,wantM:wantM,dep:dep},summary:'Fund '+CW.fmtR(fund)+', supports '+CW.fmtR(canM)+'/mo'};
+
+  document.getElementById('rFund').textContent=CW.fmtR(fund);
+  document.getElementById('rFundSub').textContent='In '+toRet+' years, at age '+ret;
+  document.getElementById('rWant').textContent=CW.fmtR(wantM);
+  document.getElementById('wantSub').textContent=CW.fmtR(wantToday)+' today, grown to age '+ret;
+  document.getElementById('rCan').textContent=CW.fmtR(canM);
+  var gapEl=document.getElementById('rGap'), gapLbl=document.getElementById('gapLbl');
+  if(gap>0){ gapLbl.textContent='Monthly shortfall'; gapEl.textContent=CW.fmtR(gap); gapEl.className='tf-row-v red'; }
+  else { gapLbl.textContent='Monthly surplus'; gapEl.textContent=CW.fmtR(-gap); gapEl.className='tf-row-v green'; }
+
+  var v=document.getElementById('verdict'), lasts=!dep;
+  v.innerHTML = lasts
+    ? '<div class="tf-callout tf-callout-teal">On these assumptions your fund supports the income you want and lasts beyond age '+life+'. Keep contributions escalating to stay on track.</div>'
+    : '<div class="tf-callout tf-callout-amber">Drawing the income you want, your fund is projected to run out at about age <b>'+dep+'</b>, '+(life-dep)+' years early. Saving more, retiring later, or a lower income closes the gap.</div>';
+}
+CW.bind(['age','ret','life','current','monthly','esc','income','preR','postR','infl'], calc, ['current','monthly','income']);
+document.getElementById('saveBtn').addEventListener('click',function(){ if(LAST) CW.save('retirement',LAST); });
+calc();
+</script>
+</body>
+</html>

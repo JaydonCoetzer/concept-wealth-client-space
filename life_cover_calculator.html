@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Cover | Concept Wealth</title>
+<link rel="stylesheet" href="css/trustfile.css">
+<script src="js/cw-profile.js"></script><script src="js/calc.js"></script>
+<style>.ec-results{position:sticky;top:86px;}@media(max-width:820px){.ec-results{position:static;}}
+.ec-total-card{background:var(--teal-deep);border:none;color:#fff;}.ec-total-card .tf-stat-label{color:rgba(255,255,255,.7);}.ec-total-card .tf-stat-value{color:#fff;}.ec-total-card .tf-stat-sub{color:rgba(255,255,255,.75);}</style>
+</head>
+<body>
+<div class="tf-wrap">
+  <span class="tf-eyebrow">Protect</span>
+  <h1 class="tf-h2">How much life cover is enough?</h1>
+  <p class="tf-lead" style="margin-bottom:24px;">What your family would need if your income stopped, less what is already in place. An estimate, not advice.</p>
+  <div class="tf-grid-2">
+    <div class="tf-card tf-card-pad-lg">
+      <p class="tf-group-label">Replace your income</p>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="income">Monthly income</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="income" inputmode="decimal" value="45 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="years">Years to replace</label><input class="tf-input" id="years" inputmode="decimal" value="15"></div>
+      </div>
+      <hr class="tf-divider">
+      <p class="tf-group-label">Settle debts &amp; big costs</p>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="bond">Home loan</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="bond" inputmode="decimal" value="1 400 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="debt">Other debts</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="debt" inputmode="decimal" value="250 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="edu">Children's education</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="edu" inputmode="decimal" value="800 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="funeral">Funeral &amp; estate costs</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="funeral" inputmode="decimal" value="150 000"></div></div>
+      </div>
+      <hr class="tf-divider">
+      <p class="tf-group-label">Already in place</p>
+      <div class="tf-grid-fields">
+        <div class="tf-field"><label class="tf-label" for="cover">Existing life cover</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="cover" inputmode="decimal" value="1 000 000"></div></div>
+        <div class="tf-field"><label class="tf-label" for="savings">Savings &amp; investments</label><div class="tf-pfx"><span>R</span><input class="tf-input" id="savings" inputmode="decimal" value="600 000"></div></div>
+      </div>
+    </div>
+    <div class="ec-results tf-stack">
+      <div class="tf-card tf-card-pad-lg ec-total-card">
+        <div class="tf-stat-label" id="gapLbl">Cover shortfall</div>
+        <div class="tf-stat-value" id="rGap">R 0</div>
+        <div class="tf-stat-sub" id="rGapSub">—</div>
+      </div>
+      <div class="tf-card">
+        <p class="tf-card-title">What your family needs</p>
+        <div class="tf-row"><span class="tf-row-k">Income replacement<small id="irSub">—</small></span><span class="tf-row-v" id="rIR">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Debts to settle</span><span class="tf-row-v" id="rDebt">R 0</span></div>
+        <div class="tf-row"><span class="tf-row-k">Education &amp; final costs</span><span class="tf-row-v" id="rCosts">R 0</span></div>
+        <div class="tf-row total"><span class="tf-row-k">Total cover needed</span><span class="tf-row-v" id="rNeed">R 0</span></div>
+      </div>
+      <div class="tf-card">
+        <div class="tf-row"><span class="tf-row-k">Less cover &amp; savings in place</span><span class="tf-row-v green" id="rHave">R 0</span></div>
+      </div>
+      <div id="note"></div>
+      <div class="tf-card"><button class="tf-btn tf-btn-ghost tf-btn-block" id="saveBtn">Save to my profile</button></div>
+    </div>
+  </div>
+  <p class="tf-assume" style="margin-top:18px;">Income replacement uses the present value of your income over the chosen years, at a 3% real return (growth above inflation). Estimate only, not advice.</p>
+</div>
+<script src="js/topbar.js" data-page="tools"></script>
+<script>
+function pvAnnuity(annual, rate, years){ if(rate<=0) return annual*years; return annual*(1-Math.pow(1+rate,-years))/rate; }
+var LAST=null;
+function calc(){
+  var inc=CW.gA('income'), years=CW.gN('years'), bond=CW.gA('bond'), debt=CW.gA('debt'),
+      edu=CW.gA('edu'), funeral=CW.gA('funeral'), cover=CW.gA('cover'), savings=CW.gA('savings');
+  var ir=pvAnnuity(inc*12, 0.03, years);
+  var debts=bond+debt, costs=edu+funeral;
+  var need=ir+debts+costs, have=cover+savings, gap=need-have;
+  LAST={inputs:{income:inc,years:years},results:{need:need,have:have,gap:gap},summary:'Life cover gap '+CW.fmtR(Math.max(0,gap))};
+  document.getElementById('rIR').textContent=CW.fmtR(ir);
+  document.getElementById('irSub').textContent=CW.fmtR(inc)+'/mo for '+years+' years';
+  document.getElementById('rDebt').textContent=CW.fmtR(debts);
+  document.getElementById('rCosts').textContent=CW.fmtR(costs);
+  document.getElementById('rNeed').textContent=CW.fmtR(need);
+  document.getElementById('rHave').textContent=CW.fmtR(have);
+  var gapEl=document.getElementById('rGap'), lbl=document.getElementById('gapLbl'), sub=document.getElementById('rGapSub');
+  if(gap>0){ lbl.textContent='Cover shortfall'; gapEl.textContent=CW.fmtR(gap); gapEl.style.color='#fff'; sub.textContent='Additional cover to consider'; }
+  else { lbl.textContent='You are covered'; gapEl.textContent=CW.fmtR(-gap)+' spare'; sub.textContent='Cover and savings exceed the need'; }
+  var n=document.getElementById('note');
+  n.innerHTML = gap>0
+    ? '<div class="tf-callout tf-callout-amber">If you passed away today, your family would be short <b>'+CW.fmtR(gap)+'</b> of what they would need. A review can close the gap affordably.</div>'
+    : '<div class="tf-callout tf-callout-teal">Your current cover and savings would meet your family’s needs. Worth confirming the detail at your next review.</div>';
+}
+CW.bind(['income','years','bond','debt','edu','funeral','cover','savings'], calc, ['income','bond','debt','edu','funeral','cover','savings']);
+document.getElementById('saveBtn').addEventListener('click',function(){ if(LAST) CW.save('life_cover',LAST); });
+calc();
+</script>
+</body>
+</html>
