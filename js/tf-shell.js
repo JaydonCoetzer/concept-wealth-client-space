@@ -60,7 +60,7 @@
     '</div>'+
     '<nav class="app-nav">'+navHtml+'</nav>'+
     '<div class="app-sb-foot">'+
-      '<a href="dashboard.html" class="app-back" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;margin-bottom:8px;">'+
+      '<a href="home.html" class="app-back" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;margin-bottom:8px;">'+
         '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> Concept Wealth site</a>'+
       '<a href="'+ADVISOR_CONTACT+'" class="tf-btn tf-btn-primary tf-btn-block tf-btn-sm">'+svg('chat')+' Talk to your adviser</a>'+
     '</div>';
